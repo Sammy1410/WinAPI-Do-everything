@@ -22,7 +22,8 @@ void *WorkerThread(void *vargp){
         
         pointer.center={(float)mouse.x,(float)mouse.y};
         //Circle_Create(pointer);
-        BallDrop(dt);
+        //BallDrop(dt);
+        Pendulum(dt);
         //CreateGraph();
         //GravitySimulation(dt);
         //Line_Create(l);
@@ -76,8 +77,8 @@ void *InputThreadFunc(void *vargp){
         GetKeyState(0);
         GetKeyboardState(key);
         
-        if(key[VK_ESCAPE]>0){
-            _exit(0);
+        if(key[VK_ESCAPE]!=0){
+            //_exit(0);
         }
         Sleep(1);
     }

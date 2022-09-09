@@ -22,21 +22,9 @@ int location(int x,int y){
 }
 
 
-float angledeg(FCOORD p1,FCOORD p2){
-    float ar,ad,a;
-    ar=atan(fabs(p2.y-p1.y)/fabs(p2.x-p1.x));
-    ad=rad2deg(ar);
-    if(p2.x>=p1.x && p2.y>=p1.y){
-        a=ad;
-    }else if(p2.x<=p1.x && p2.y>=p1.y){
-        a=180-ad;
-    }else if(p2.x<=p1.x && p2.y<=p1.y){
-        a=180+ad;
-    }else if(p2.x>=p1.x && p2.y<=p1.y){
-        a=360-ad;
-    }
-
-    return a;
+float angle(FCOORD p1,FCOORD p2){
+    
+    return atan(fabs(p2.y-p1.y)/fabs(p2.x-p1.x));
 }
 
 

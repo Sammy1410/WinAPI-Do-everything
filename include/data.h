@@ -4,6 +4,8 @@
 #include <includes.h>
 float scale=100;
 float FPS=60.00f;
+
+const float gravity=9.81;
 double frametime=0,loop_time=0;
 BOOL screenEnable=0;
 

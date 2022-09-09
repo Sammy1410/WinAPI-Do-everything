@@ -26,7 +26,7 @@ int _InitializeWindow(HINSTANCE _thisInstance,int _ConsoleShowing){
         _thisInstance,
         NULL
     );
-    
+    /*
     RECT rect;
     GetUpdateRect(MainHandle,&rect,0);
     AdjustWindowRectEx(&rect, WS_OVERLAPPEDWINDOW, WS_CLIPSIBLINGS, 0);
@@ -38,7 +38,7 @@ int _InitializeWindow(HINSTANCE _thisInstance,int _ConsoleShowing){
     lExStyle &= ~(WS_EX_DLGMODALFRAME | WS_EX_CLIENTEDGE | WS_EX_STATICEDGE);
     SetWindowLong(MainHandle, GWL_EXSTYLE, lExStyle);
     SetWindowPos(MainHandle, NULL, 0,0,0,0, SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOOWNERZORDER);
-    
+    */
     if(MainHandle == NULL){
         return 0;
     }

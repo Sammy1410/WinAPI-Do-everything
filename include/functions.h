@@ -14,7 +14,7 @@ float distance(FCOORD p1,FCOORD p2);
 float roundf(float var,int places);
 
 
-float angledeg(FCOORD p1,FCOORD p2);
+float angle(FCOORD p1,FCOORD p2);
 float anglerad(FCOORD p1,FCOORD p2);
 float deg2rad(float ang);
 float rad2deg(float ang);

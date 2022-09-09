@@ -2,8 +2,22 @@
 #include <tasksobj.h>
 
 void TasksInit(){
+    //Pendulum
+    bob.spawn(700,300,10,20);
+    bobC.center=bob.posXY;
+    bobC.color=green;
+    bobC.radius=bob.radius;
+    wire.start=walldot;
+    wire.end=bob.posXY;
+    wire.width=1;
+    weight.r=gravity*bob.mass;
+    weight.t=M_PI_2;
+    len=distance(walldot,bob.posXY);
+
+
+    
     //Ball Drop
-    ball.spawn(500,100,10,40);
+    ball.spawn(600,100,10,40);
     ballC.radius=ball.radius;
     ballC.color=black;
     ballC.center=ball.posXY;
@@ -28,7 +42,35 @@ void TasksInit(){
 }
 
 void Pendulum(double &dt){
+    float dist;
+    theta=anglerad(walldot,bob.posXY);
+    dist=distance(walldot,bob.posXY);
     
+    inertia.t=M_PI_2+theta;
+    tension.t=M_PI+theta;
+    tension.r=weight.r*sin(theta);
+    
+    inertia.r= bob.mass*( sqrt( pow(bob.vel.x,2) + pow(bob.vel.y,2) ) ) / pow(dist,2);
+
+    spring.r = wirek * (dist-len); 
+    spring.t=M_PI+theta;
+    
+    bob.f={ /*inertia.r*cos(inertia.t) +*/ tension.r*cos(tension.t) + spring.r*cos(spring.t),
+                    /*inertia.r*sin(inertia.t)+*/ weight.r*sin(weight.t) + spring.r*sin(spring.t) +tension.r*sin(tension.t)};
+    bob.acc={ bob.f.x/bob.mass , bob.f.y/bob.mass};
+    
+    bob.vel.x+=bob.acc.x*dt;
+    bob.vel.y+=bob.acc.y*dt;
+
+    bob.posXY.x+=( bob.vel.x*dt )*scale;
+    bob.posXY.y+=( bob.vel.y*dt )*scale;
+    
+    if(screenEnable){
+        bobC.center=bob.posXY;
+        wire.end=bob.posXY;
+        Circle_Create(bobC);
+        Line_Create(wire);
+    }
 }
 
 

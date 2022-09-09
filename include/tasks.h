@@ -4,7 +4,7 @@
 
 void TasksInit();
 
-void Pendulum(double &dt)
+void Pendulum(double &dt);
 void GravitySimulation(double &dt);
 void BallDrop(double &dt);
 void CreateGraph();

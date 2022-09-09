@@ -2,6 +2,7 @@ all: compile link run
 
 compile:
 	g++ -c ./src/main.cpp -I"F:\Codes\Windows Programs\Windows C_C++\Application\include"
+	
 
 link:
 	g++.exe main.o -o ./bin/main.exe -L"F:\Codes\Windows Programs\Windows C_C++\Application\lib" -lgdi32 -lgdiplus
