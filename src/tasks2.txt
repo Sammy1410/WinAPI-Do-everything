@@ -1,0 +1,26 @@
+
+float angle(FCOORD p1,FCOORD p2){
+    float ar,ad,a;
+    ar=atan(fabs(p2.y-p1.y)/fabs(p2.x-p1.x));
+    ad=(ar/M_PI)*180;
+    if(p2.x>=p1.x){
+        //a=ar;
+        if(p2.y>p1.y){
+            a=ad;
+        }else{
+            a=360-ad;
+        }
+    }else if(p2.x<p1.x ){
+        //a=M_PI-ar;
+        if(p2.y>=p1.y)
+        a=180-ad;
+    }else if(p2.x<=p1.x && p2.y<=p1.y){
+        //a=M_PI+ar;
+        a=180+ad;
+    }else if(p2.x>=p1.x && p2.y<=p1.y){
+        //a=M_PI*2-ar;
+        
+    }
+
+    return a;
+}
