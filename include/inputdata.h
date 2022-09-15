@@ -19,20 +19,16 @@ int LenRbuf,LenWbuf;
 
 //Mouse Inputs
 POINT mouse;  //coordinates
-BOOL mouseLdown=0;
-BOOL mouseRdown=0;
-BOOL mouseMdown=0;
 
+
+struct buttontime{
+    BOOL isHolding;
+    float holdstart;
+    float holdend;
+    float holdtime;
+}Lbutton,Rbutton,Mbutton;
 int M_ScrollDown=0;
 int M_ScrollUp=0;
-
-BOOL LbuttonHolding=0;
-BOOL MbuttonHolding=0;
-BOOL RbuttonHolding=0;
-
-float LbuttonHoldTime=0;
-float MbuttonHoldTime=0;
-float RbuttonHoldTime=0;
 
 FCOORD mouseBuffer[MOUSE_BUF_MAX];
 int M_writeBuf=0;

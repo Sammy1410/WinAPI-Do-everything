@@ -24,25 +24,10 @@ void *WorkerThread(void *vargp){
     do{
         loop_start=clock();
         
-        //pointer.center={(float)mouse.x,(float)mouse.y};
-        /*if(key['W']){
-            defRad+=10;
-            Sleep(100);
-            printf("%0.1f\n",defRad);
-        }
-            
-        if(key['S']){
-            printf("%0.1f\n",defRad);
-            Sleep(100);
-            defRad-=10;
-        }*/
-            
-        
-
         for(int i=0;i<circleCount;i++){
             Circle_Create(*circ[i]);
             //if(_timenow>=1)
-                fprintf(tr_logs,"Circle %d :%0.2f %0.2f\n",i,circ[i]->center.x,circ[i]->center.y);
+            //fprintf(tr_logs,"Circle %d :%0.2f %0.2f\n",i,circ[i]->center.x,circ[i]->center.y);
         }
 
         
@@ -73,7 +58,7 @@ void *WorkerThread(void *vargp){
             }
         }
         //Circle_Create(pointer);
-        BallDrop(dt);
+        //BallDrop(dt);
         //Pendulum(dt);
         //CreateGraph();
         //GravitySimulation(dt);
@@ -136,34 +121,85 @@ void *InputThreadFunc(void *vargp){
         
         GetCursorPos(&mouse);
         ScreenToClient(MainHandle, &mouse);
+        
         if(key[VK_LBUTTON]){
-           
-            if(M_writeBuf<MOUSE_BUF_MAX){
-                mouseBuffer[M_writeBuf].x=(float)mouse.x;
-                mouseBuffer[M_writeBuf].y=(float)mouse.y;
-                M_writeBuf++;
-            }else{
-                //if( !(M_readBuf<M_writeBuf) ){
-                    MwriteBufFull=1;
-                    M_writeBuf=0;
-                //} 
+            if(!Lbutton.isHolding){    
+                Lbutton.holdstart=runtime;
+                printf("Hold Start %0.6f\n",Lbutton.holdstart);
             }
-            //Sleep(10);
+            Lbutton.isHolding=1;
+        }else{
+            if(Lbutton.isHolding){
+                Lbutton.isHolding=0;
+                Lbutton.holdend=runtime;
+                Lbutton.holdtime=Lbutton.holdend-Lbutton.holdstart;
+                printf("Hold Ended ..HoldTime: %0.6f\n",Lbutton.holdtime);    
+                if(M_writeBuf<MOUSE_BUF_MAX){
+                    mouseBuffer[M_writeBuf].x=(float)mouse.x;
+                    mouseBuffer[M_writeBuf].y=(float)mouse.y;
+                    M_writeBuf++;
+                }else{
+                    //if( !(M_readBuf<M_writeBuf) ){
+                        MwriteBufFull=1;
+                        M_writeBuf=0;
+                    //} 
+                }
+
+            }
+            
         }
 
         if(key[VK_MBUTTON]){
-            
+            if(!Mbutton.isHolding)
+                Mbutton.holdstart=runtime;
+            Mbutton.isHolding=1;
+        }else{
+            if(Mbutton.isHolding){
+                Mbutton.isHolding=0;
+                Mbutton.holdend=runtime;
+                Mbutton.holdtime=Mbutton.holdend-Mbutton.holdstart;
+            }
+                
         }
 
         if(key[VK_RBUTTON]){
-            
+            if(!Rbutton.isHolding){    
+                Rbutton.holdstart=runtime;
+            }
+            Rbutton.isHolding=1;
+        }else{
+            if(Rbutton.isHolding){
+                Rbutton.isHolding=0;
+                Rbutton.holdend=runtime;
+                Rbutton.holdtime=Rbutton.holdend-Rbutton.holdstart;
+            }
         }
+
         if(key[VK_ESCAPE]){
             _exit(0);
         }
         
     }
         
+}
+
+
+
+void *TimerThreadFunc(void *vargp){
+   TimerInitialized=1;
+   do{
+    program_time=clock();
+    
+    runtime=double(program_time)/double(CLOCKS_PER_SEC);
+    
+    fprintf(tr_logs,"Time: %lf RunTime: %lf\n",program_time,runtime);
+    time(&t);
+    time_str = ctime(&t);
+    time_str[strlen(time_str)-1] = '\0';
+    Sleep(1);
+   }while(1);
+   
+    
 }
 
 void *GraphicsUpdater(void *vargp){
@@ -195,9 +231,6 @@ void *GraphicsUpdater(void *vargp){
 
     WindowInitialized=1;
     while(!(WindowThreadDone && TimerInitialized)){ }
-
-
-
   do{
         
         while(!WorkerThreadDone){}
@@ -215,7 +248,8 @@ void *GraphicsUpdater(void *vargp){
              //c=WinBuffer0[i];
               WinBuffer0[ScreenBuf[i]]=Wincolor;
               //WinBuffer0[i]=Wincolor;
-             if(mouseLdown!=1 && mouseRdown!=1 && mouseMdown!=1){
+             
+             if(Lbutton.isHolding!=1 && Rbutton.isHolding!=1 && Mbutton.isHolding!=1){
                 //if(WinBuffer0[i]!=Wincolor)  
              }else{
                 c=1;
@@ -239,16 +273,3 @@ void *GraphicsUpdater(void *vargp){
 
 }
 
-
-void *TimerThreadFunc(void *vargp){
-   TimerInitialized=1;
-   do{
-    program_time=clock();
-    Sleep(1);
-    time(&t);
-    time_str = ctime(&t);
-    time_str[strlen(time_str)-1] = '\0';
-   }while(1);
-   
-    
-}

@@ -1,5 +1,6 @@
 #include <includes.h>
 
+
 //Here the definition of functions for graphics is written
 
 void CanvasDraw(int x,int y,COLORREF color){

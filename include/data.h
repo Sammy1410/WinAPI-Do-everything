@@ -165,7 +165,7 @@ class queue{
 
 
 char *time_str;
-double program_time;
+double program_time,runtime;
 
 //std::fstream err_logs,warn_logs,msg_logs;
 FILE *err_logs,*warn_logs,*msg_logs,*tr_logs;
