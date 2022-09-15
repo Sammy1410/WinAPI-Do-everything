@@ -3,7 +3,7 @@
 
 #include <includes.h>
 
-#define MOUSE_BUF_MAX 50
+#define MOUSE_BUF_MAX 5
 
 
 //KeyBoard Inputs
@@ -37,6 +37,7 @@ float RbuttonHoldTime=0;
 FCOORD mouseBuffer[MOUSE_BUF_MAX];
 int M_writeBuf=0;
 int M_readBuf=0;
+BOOL MwriteBufFull=0;
 
 
 #endif

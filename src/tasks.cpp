@@ -50,7 +50,7 @@ void Pendulum(double &dt){
     tension.t=M_PI+theta;
     tension.r=weight.r*sin(theta);
     
-    inertia.r= bob.mass*( sqrt( pow(bob.vel.x,2) + pow(bob.vel.y,2) ) ) / pow(dist,2);
+    inertia.r= bob.mass*( sqrt( pow(bob.vel.x,2) + pow(bob.vel.y,2) ) ) / dist;
 
     spring.r = wirek * (dist-len); 
     spring.t=M_PI+theta;
@@ -201,13 +201,14 @@ void GravitySimulation(double &dt){
 
 void CreateGraph(){
     int i=0;
-    do{        
+    if(screenEnable){      
+        do{        
             for(int j=1;j<windowDefault.width;j++){
                 CanvasDraw(j,i,shadow);
             }
             i+=5;
         }while(i<windowDefault.height);
-
+    
         i=0;
         do{        
             for(int j=1;j<windowDefault.height;j++){
@@ -215,17 +216,20 @@ void CreateGraph(){
             }
             i+=5;
         }while(i<windowDefault.width);   
-
+        
         i=50;
         for(int k=0;k<2;k++){
             for(int j=0;j<windowDefault.height;j++){
                 CanvasDraw(i+k,j,RGB(53,53,53));
             }
         }
-         i=windowDefault.height-75;
+        i=windowDefault.height-75;
         for(int k=0;k<2;k++){
             for(int j=0;j<windowDefault.width;j++){
                 CanvasDraw(j,i+k,RGB(53,53,53));
             }
         }
+    
+    }
+    
 }

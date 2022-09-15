@@ -4,7 +4,7 @@
 
 //Pendulum
 force inertia,tension,spring,weight;
-float wirek=0.15,len;
+float wirek=100,len;
 force Bob_Fg;
 FCOORD walldot={600,200};
 Particle bob;

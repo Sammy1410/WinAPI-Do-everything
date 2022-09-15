@@ -11,19 +11,70 @@ void *WorkerThread(void *vargp){
     double _timenow=0;
 
 
-    circle pointer;
-    pointer.radius=8;
-    pointer.color=blue;
-
+    int circleCount=0;
+    circle **circ;
+    circ=(circle **)malloc(sizeof(circle*));
+    circ[circleCount]=(circle *)malloc(sizeof(circle));
+    static float defRad=10;
+    /*circ[0].radius=10;
+    circ[0].color=black;
+    circ[0].center={10,10};*/
     TasksInit();
     
     do{
         loop_start=clock();
         
-        pointer.center={(float)mouse.x,(float)mouse.y};
+        //pointer.center={(float)mouse.x,(float)mouse.y};
+        /*if(key['W']){
+            defRad+=10;
+            Sleep(100);
+            printf("%0.1f\n",defRad);
+        }
+            
+        if(key['S']){
+            printf("%0.1f\n",defRad);
+            Sleep(100);
+            defRad-=10;
+        }*/
+            
+        
+
+        for(int i=0;i<circleCount;i++){
+            Circle_Create(*circ[i]);
+            //if(_timenow>=1)
+                fprintf(tr_logs,"Circle %d :%0.2f %0.2f\n",i,circ[i]->center.x,circ[i]->center.y);
+        }
+
+        
+        if(M_writeBuf!=0){ 
+            if( M_readBuf<MOUSE_BUF_MAX && M_readBuf<M_writeBuf){
+                
+                circ[circleCount]->center=mouseBuffer[M_readBuf];
+                circ[circleCount]->radius=defRad;
+                circ[circleCount]->color=black;
+                printf("MOUSE: %0.2f %0.2f\n",mouseBuffer[M_readBuf].x,mouseBuffer[M_readBuf].y);
+                printf("Circle: %0.2f %0.2f\n",circ[circleCount]->center.x,circ[circleCount]->center.y);
+                printf("No of Circles : %d\n",circleCount+1);
+                M_readBuf++;
+
+                circleCount++;
+                //circ=new circle[circleCount*sizeof(circle)+1];
+                //circ=(circle**)realloc(circ,circleCount*sizeof(circle*));
+                circ[circleCount]=(circle *)malloc(sizeof(circle));
+                //circ+circleCount=(void *)temp;
+                //circ[circleCount].center=(FCOORD )
+                //circ[circleCount-1]
+            }else{
+                if(MwriteBufFull){
+                    M_readBuf=0;
+                    //circleCount=0;
+                    MwriteBufFull=0;
+                }
+            }
+        }
         //Circle_Create(pointer);
-        //BallDrop(dt);
-        Pendulum(dt);
+        BallDrop(dt);
+        //Pendulum(dt);
         //CreateGraph();
         //GravitySimulation(dt);
         //Line_Create(l);
@@ -38,13 +89,13 @@ void *WorkerThread(void *vargp){
         loop_start=clock();
         screenEnable=0;
         if(frametime>=(1/FPS)){
-            fprintf(tr_logs,"FRAME_TIME= %lf\n",frametime);
+            //fprintf(tr_logs,"FRAME_TIME= %lf\n",frametime);
             screenEnable=1;
             framenow++;
            
             if(_timenow>=1){
                 //fprintf(msg_logs,"%s :: FPS = %d \n",time_str,framenow-framelast);
-                fprintf(tr_logs,"FPS = %d\n\n",framenow-framelast);
+                //fprintf(tr_logs,"FPS = %d\n\n",framenow-framelast);
                 framelast=framenow;
                 _timenow=0;
             }
@@ -71,16 +122,46 @@ void *InputThreadFunc(void *vargp){
 
     
     while(1){
+        if(GetForegroundWindow()!=MainHandle){
+            Sleep(100);
+            continue;
+        }
+
+        Sleep(1);
+        //GetKeyState(0);
+        //GetKeyboardState(key);
+        for(int i=0x01;i<=0xFE;i++){
+            key[i]=((GetKeyState(i)) & 0x8000 ? 1:0);
+        }
+        
         GetCursorPos(&mouse);
         ScreenToClient(MainHandle, &mouse);
-        
-        GetKeyState(0);
-        GetKeyboardState(key);
-        
-        if(key[VK_ESCAPE]!=0){
-            //_exit(0);
+        if(key[VK_LBUTTON]){
+           
+            if(M_writeBuf<MOUSE_BUF_MAX){
+                mouseBuffer[M_writeBuf].x=(float)mouse.x;
+                mouseBuffer[M_writeBuf].y=(float)mouse.y;
+                M_writeBuf++;
+            }else{
+                //if( !(M_readBuf<M_writeBuf) ){
+                    MwriteBufFull=1;
+                    M_writeBuf=0;
+                //} 
+            }
+            //Sleep(10);
         }
-        Sleep(1);
+
+        if(key[VK_MBUTTON]){
+            
+        }
+
+        if(key[VK_RBUTTON]){
+            
+        }
+        if(key[VK_ESCAPE]){
+            _exit(0);
+        }
+        
     }
         
 }

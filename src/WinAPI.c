@@ -9,6 +9,9 @@ LRESULT CALLBACK MainHandleMsg(HWND _MainHandle,UINT uMsg,WPARAM wParam,LPARAM l
       case WM_DESTROY:
         PostQuitMessage(0);
         break;
+      case WM_CHAR:
+        
+        break;
       case WM_QUIT:
         _exit(0);
       case WM_CLOSE:

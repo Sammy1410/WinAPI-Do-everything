@@ -14,7 +14,7 @@ struct _windowDefault{
     int height;
 }windowDefault;
 
-HWND MainHandle;
+HWND MainHandle,ActiveWindow;
 HINSTANCE MainInstance,prevMainInstance;
 PSTR pCmdLine;
 int ConsoleShowing;
