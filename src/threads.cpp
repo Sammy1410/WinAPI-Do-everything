@@ -70,7 +70,7 @@ void *WorkerThread(void *vargp){
         }
         if(ObjSelected>=0){
             newCirc[ObjSelected].center=mousePos;
-            newCirc[ObjSelected].color=red-100;
+            newCirc[ObjSelected].color=blue;
         }
             
 
@@ -105,7 +105,7 @@ void *WorkerThread(void *vargp){
             if(_timenow>=1){
                 //fprintf(msg_logs,"%s :: FPS = %d \n",time_str,framenow-framelast);
                 //fprintf(tr_logs,"FPS = %d\n\n",framenow-framelast);
-                printf("FPS = %d\n",framenow-framelast);
+                //printf("FPS = %d\n",framenow-framelast);
                 framelast=framenow;
                 _timenow=0;
             }
@@ -180,7 +180,6 @@ void *InputThreadFunc(void *vargp){
             if(!Lbutton.isHolding){    
                 Lbutton.holdStart=runtime;
                 Lbutton.lastClickPos=mousePos;
-                printf("Clicked \n");
             }
             Lbutton.isHolding=1;
             Lbutton.holdEnd=runtime;
