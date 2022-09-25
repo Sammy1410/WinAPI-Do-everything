@@ -1,12 +1,18 @@
 #include <includes.h>
+#include <vector>
 
-
+//Circles
+static float defRad=10;
+int circleCount=0;
+//circle **circ;
+std::vector<circle> circ;
+circle temp;
 
 //Pendulum
 force inertia,tension,spring,weight;
 float wirek=100,len;
 force Bob_Fg;
-FCOORD walldot={600,200};
+FCOORD walldot={600,300};
 Particle bob;
 circle bobC;
 line wire;
@@ -25,7 +31,13 @@ float dampconstant=5;
 
 
 //Gravity simulation
-Particle *p;
-int pCount;
+static Particle *p;
+static int pCount;
+    
+//circle *pcircle;
+circle pcircle;
+float dist;
+vec Force;
+    
 
     

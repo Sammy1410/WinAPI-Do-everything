@@ -51,10 +51,10 @@ class Particle{
 
 typedef struct _circledata{
         FCOORD center;
-        FCOORD *points;
         float radius;
         BOOL filled;
         COLORREF color;
+        FCOORD *points;
 }circle,*circleP;
 
 

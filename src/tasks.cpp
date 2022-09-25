@@ -1,11 +1,18 @@
 #include <includes.h>
 #include <tasksobj.h>
 
+
+
 void TasksInit(){
+    //circles
+    
+    
+
+
     //Pendulum
-    bob.spawn(700,300,10,20);
+    bob.spawn(610,100,10,20);
     bobC.center=bob.posXY;
-    bobC.color=green;
+    bobC.color=red;
     bobC.radius=bob.radius;
     wire.start=walldot;
     wire.end=bob.posXY;
@@ -32,13 +39,57 @@ void TasksInit(){
 
     //Gravity Simulation
     pCount=5;
-    p=(Particle *)malloc(pCount*sizeof(Particle));
-    for(int i=0;i<pCount;i++){
-        p[i].spawn(randINT(10,windowDefault.width),randINT(10,windowDefault.height),randINT(1,50),10);
-
+    p=(Particle *)calloc(pCount,sizeof(Particle));
+    p[0].spawn(500,500,10,50);
+    for(int i=1;i<pCount;i++){
+        //p[i].spawn(randINT(10,windowDefault.width),randINT(10,windowDefault.height),randINT(1,50),10);
+        p[i].spawn(100+i*100,200+i*50,10,20);
     }
+    //pcircle=(circle *)malloc(circleCount*sizeof(circle));
 
+}
 
+void circles(){
+    for(int i=0;i<circleCount;i++){
+            Circle_Create(circ[i]);
+            //if(_timenow>=1)
+            //fprintf(tr_logs,"Circle %d :%0.2f %0.2f\n",i,circ[i]->center.x,circ[i]->center.y);
+        }
+
+        
+        if(M_writeBuf!=0){ 
+            if( M_readBuf<MOUSE_BUF_MAX && M_readBuf<M_writeBuf){
+                if( !(mouseBuffer[M_readBuf].x>windowDefault.width || mouseBuffer[M_readBuf].y>windowDefault.height ||
+                        mouseBuffer[M_readBuf].x<0 || mouseBuffer[M_readBuf].y<0 ) )
+                {   
+                    //temp=(circle *)malloc(sizeof(circle));
+                    
+                    temp.center=mouseBuffer[M_readBuf];
+                    temp.radius=Lbutton.holdTime*20;
+                    temp.color=black;
+                    printf("MOUSE: %0.2f %0.2f\n",mouseBuffer[M_readBuf].x,mouseBuffer[M_readBuf].y);
+                    printf("Circle: %0.2f %0.2f\n",temp.center.x,temp.center.y);
+                    printf("No of Circles : %d\n",circleCount+1);
+                    M_readBuf++;
+
+                    circleCount++;
+                    circ.push_back(temp);
+                    //circ=new circle[circleCount*sizeof(circle)+1];
+                    //circ=(circle**)realloc(circ,circleCount*sizeof(circle*));
+                    //circ[circleCount]=(circle *)malloc(sizeof(circle));
+                    //circ+circleCount=(void *)temp;
+                    //circ[circleCount].center=(FCOORD )
+                    //circ[circleCount-1]
+                }   
+            }else{
+                if(MwriteBufFull){
+                    M_readBuf=0;
+                    //circleCount=0;
+                    MwriteBufFull=0;
+                }
+            }
+        }
+        
 }
 
 void Pendulum(double &dt){
@@ -51,7 +102,7 @@ void Pendulum(double &dt){
     tension.r=weight.r*sin(theta);
     
     inertia.r= bob.mass*( sqrt( pow(bob.vel.x,2) + pow(bob.vel.y,2) ) ) / dist;
-
+    
     spring.r = wirek * (dist-len); 
     spring.t=M_PI+theta;
     
@@ -134,18 +185,21 @@ void BallDrop(double &dt){
 }
 
 void GravitySimulation(double &dt){
-    
-    circle pcircle[pCount];
-    float dist;
-    vec Force;
+
     if(screenEnable){
         for(int i=0;i<pCount;i++){
-                pcircle[i].center={p[i].posXY.x,p[i].posXY.y};
-                pcircle[i].radius=p[i].radius;
-                pcircle[i].color=black;
+                /*pcircle[i].center={p[i].posXY.x,p[i].posXY.y};
+                pcircle[i].radius=20;
+                pcircle[i].color=black;*/
+                pcircle.center={p[i].posXY.x,p[i].posXY.y};
+                printf("Center: %0.2f %0.2f\n",pcircle.center.x,pcircle.center.y);
+                pcircle.radius=20;
+                pcircle.color=black;
                 //if(i==0)pcircle[0].radius=20;
                 //if(i==pCount-1)pcircle[i].radius=20;
-                Circle_Create(pcircle[i]);
+                Circle_Create(pcircle);
+                
+                //Circle_Create(pcircle[i]);
             }    
     }
     
@@ -166,7 +220,7 @@ void GravitySimulation(double &dt){
             //fprintf(tr_logs,"Dist: %0.5f\n",dist);
             //fprintf(tr_logs,"Mass %d\t ( %0.5f , %0.5f )\n",i,p[i].posXY.x,p[i].posXY.y);
             //fprintf(tr_logs,"Mass %d\t ( %0.5f , %0.5f )\n",k,p[k].posXY.x,p[k].posXY.y);
-            Force.r=(0.667)*p[i].mass*p[k].mass/pow(dist,2);
+            Force.r=(0.00667)*p[i].mass*p[k].mass/pow(dist,2);
             Force.t=anglerad(p[i].posXY,p[k].posXY);
             
             //fprintf(tr_logs,"Force: %0.5f Angle: %0.5f\n",Force.r,Force.t);

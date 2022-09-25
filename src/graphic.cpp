@@ -11,7 +11,8 @@ void CanvasDraw(int x,int y,COLORREF color){
     {
        // _y=windowDefault.height-y;
         pos=y*windowDefault.width+x;
-        ScreenBuf[bufcount]=pos;
+        ScreenBuf.push_back(pos);
+        //ScreenBuf[bufcount]=pos;
         bufcount++;
         WinBuffer0[pos]=color;
     }    
@@ -70,6 +71,7 @@ void Poly_Create(polyP Poly){
 }
 
 //Lines - Straight
+/*
 void Line_Create(line Line){
     Line.slope=(Line.end.y-Line.start.y)/(Line.end.x-Line.start.x);
     double i,j;
@@ -111,14 +113,48 @@ void Line_Create(line Line){
 
     }  
 }
+*/
+
+void Line_Create(line Line){
+    float dx,dy,Xincrement,Yincrement;
+
+    float x;
+    float y;
+
+    float steps;
+    dx=Line.end.x-Line.start.x;
+    dy=Line.end.y-Line.start.y;
+
+    if(fabs(dx)>fabs(dy)){
+        steps=fabs(dx);
+    }else if(fabs(dx)<fabs(dy)){
+        steps=fabs(dy);
+    }
+
+    Xincrement=dx/steps;
+    Yincrement=dy/steps;
+    for(int k=0;k<Line.width;k++){
+        x=Line.start.x+k;
+        y=Line.start.y+k;
+        for(int i=0;i<steps;i++){
+            CanvasDraw(x,y,Line.color);
+            x+=Xincrement;
+            y+=Yincrement;
+        }
+    }
+    
+
+    
+}
+
 
 //Rectangles
-void Rect_Create(rect rect){
-    rect.length=rect.end.x-rect.start.x;
-    rect.breadth=rect.end.y-rect.start.y;
-    for(int j=0;j<rect.breadth;j++){
-        for (int i=0;i<rect.length;i++){
-            CanvasDraw(rect.start.x+i,rect.start.y+j,rect.color);
+void Rect_Create(rectP rect){
+    rect->length=rect->end.x-rect->start.x;
+    rect->breadth=rect->end.y-rect->start.y;
+    for(int j=0;j<rect->breadth;j++){
+        for (int i=0;i<rect->length;i++){
+            CanvasDraw(rect->start.x+i,rect->start.y+j,rect->color);
         }
     }
     //Checking with pointers

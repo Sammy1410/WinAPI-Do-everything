@@ -3,7 +3,7 @@
 
 
 void TasksInit();
-
+void circles();
 void Pendulum(double &dt);
 void GravitySimulation(double &dt);
 void BallDrop(double &dt);

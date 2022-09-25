@@ -3,14 +3,20 @@
 
 #include <includes.h>
 
-#define MOUSE_BUF_MAX 5
-
-
-//KeyBoard Inputs
-#define KEY_DOWN(vk_code)  ((GetAsyncKeyState(vk_code))&0x8000 ? 1:0)
+#define MOUSE_BUF_MAX 3
 
 static int preState=0x30;
 BYTE key[256];
+BYTE keyText[256];
+
+struct keydata{
+    BOOL isPressed;
+    float holdStart;
+    float holdEnd;
+    float holdTime;
+    float lastHoldTime;
+}keytime[256];
+
 
 //Arduino DATA 
 char *ArduinoRbuf;
@@ -19,13 +25,15 @@ int LenRbuf,LenWbuf;
 
 //Mouse Inputs
 POINT mouse;  //coordinates
-
-
+FCOORD mousePos;
+FCOORD mouseclickPos={0,0};
 struct buttontime{
     BOOL isHolding;
-    float holdstart;
-    float holdend;
-    float holdtime;
+    float holdStart;
+    float holdEnd;
+    float holdTime;
+    float lastHoldTime;
+    FCOORD lastClickPos;
 }Lbutton,Rbutton,Mbutton;
 int M_ScrollDown=0;
 int M_ScrollUp=0;

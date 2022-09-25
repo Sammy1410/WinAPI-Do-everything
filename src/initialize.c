@@ -17,6 +17,7 @@ int _InitializeWindow(HINSTANCE _thisInstance,int _ConsoleShowing){
         CLASS_NAME,
         AppHeader,
         WS_OVERLAPPEDWINDOW | WS_MAXIMIZE ,
+        //WS_MAXIMIZE,
         windowDefault.xPos,
         windowDefault.yPos,
         windowDefault.width,
@@ -26,6 +27,21 @@ int _InitializeWindow(HINSTANCE _thisInstance,int _ConsoleShowing){
         _thisInstance,
         NULL
     );
+
+    RECT rcClient;
+    GetWindowRect(MainHandle, &rcClient);
+
+
+    // Inform the application of the frame change.
+    SetWindowPos(MainHandle, 
+                 NULL, 
+                 rcClient.left, rcClient.top,
+                 rcClient.right-rcClient.left, rcClient.bottom-rcClient.top,
+                 SWP_FRAMECHANGED);
+
+    //fCallDWP = true;
+    //lRet = 0;
+
     /*
     RECT rect;
     GetUpdateRect(MainHandle,&rect,0);

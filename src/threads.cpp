@@ -1,5 +1,25 @@
 #include <includes.h>
 
+
+BOOL isMouseHovering(circle &c){
+    int hit=0;
+    float lSide,rSide,top,bottom;
+    lSide=c.center.x-c.radius;
+    rSide=c.center.x+c.radius;
+    top=c.center.y-c.radius;
+    bottom=c.center.y+c.radius;
+    if( mousePos.x >= lSide && mousePos.x <= rSide)
+        hit++;
+    if( mousePos.y >= top && mousePos.y <= bottom)
+        hit++;
+
+    if(hit==2)
+        return 1;
+    else
+        return 0;
+
+}
+
 void *WorkerThread(void *vargp){
     while(!WindowInitialized){ }
 
@@ -11,53 +31,57 @@ void *WorkerThread(void *vargp){
     double _timenow=0;
 
 
-    int circleCount=0;
-    circle **circ;
-    circ=(circle **)malloc(sizeof(circle*));
-    circ[circleCount]=(circle *)malloc(sizeof(circle));
-    static float defRad=10;
-    /*circ[0].radius=10;
-    circ[0].color=black;
-    circ[0].center={10,10};*/
-    TasksInit();
-    
+    circle newCirc[2];
+    newCirc[0].center={150,150};
+    newCirc[0].radius=50;
+    newCirc[0].color=shadow;
+    newCirc[1].center={450,450};
+    newCirc[1].radius=50;
+    newCirc[1].color=black;
+    //TasksInit();
+    int ObjSelected=-1;
+    bool selected=0;
+
     do{
         loop_start=clock();
         
-        for(int i=0;i<circleCount;i++){
-            Circle_Create(*circ[i]);
-            //if(_timenow>=1)
-            //fprintf(tr_logs,"Circle %d :%0.2f %0.2f\n",i,circ[i]->center.x,circ[i]->center.y);
-        }
+        //m=300L;
 
-        
-        if(M_writeBuf!=0){ 
-            if( M_readBuf<MOUSE_BUF_MAX && M_readBuf<M_writeBuf){
-                
-                circ[circleCount]->center=mouseBuffer[M_readBuf];
-                circ[circleCount]->radius=defRad;
-                circ[circleCount]->color=black;
-                printf("MOUSE: %0.2f %0.2f\n",mouseBuffer[M_readBuf].x,mouseBuffer[M_readBuf].y);
-                printf("Circle: %0.2f %0.2f\n",circ[circleCount]->center.x,circ[circleCount]->center.y);
-                printf("No of Circles : %d\n",circleCount+1);
-                M_readBuf++;
 
-                circleCount++;
-                //circ=new circle[circleCount*sizeof(circle)+1];
-                //circ=(circle**)realloc(circ,circleCount*sizeof(circle*));
-                circ[circleCount]=(circle *)malloc(sizeof(circle));
-                //circ+circleCount=(void *)temp;
-                //circ[circleCount].center=(FCOORD )
-                //circ[circleCount-1]
-            }else{
-                if(MwriteBufFull){
-                    M_readBuf=0;
-                    //circleCount=0;
-                    MwriteBufFull=0;
+        for(int i=0;i<2;i++){
+            if(isMouseHovering(newCirc[i])){
+                newCirc[i].color=red;
+                newCirc[i].radius=55;
+                if(Lbutton.holdTime>=0.05f){
+                    if(!selected){
+                        ObjSelected=i;
+                        selected=1;
+                    }
+
+                }else{
+                    selected=0;
+                    ObjSelected=-1;
+                    //newCirc[i].center=Lbutton.lastClickPos;
                 }
+            }else{
+                newCirc[i].color=black;
+                newCirc[i].radius=50;
             }
         }
-        //Circle_Create(pointer);
+        if(ObjSelected>=0){
+            newCirc[ObjSelected].center=mousePos;
+            newCirc[ObjSelected].color=red-100;
+        }
+            
+
+        if(screenEnable){
+            Circle_Create(newCirc[0]);
+            Circle_Create(newCirc[1]);
+        }
+            
+
+        //circles();
+        
         //BallDrop(dt);
         //Pendulum(dt);
         //CreateGraph();
@@ -76,16 +100,16 @@ void *WorkerThread(void *vargp){
         if(frametime>=(1/FPS)){
             //fprintf(tr_logs,"FRAME_TIME= %lf\n",frametime);
             screenEnable=1;
+            WorkerThreadDone=1;
             framenow++;
-           
             if(_timenow>=1){
                 //fprintf(msg_logs,"%s :: FPS = %d \n",time_str,framenow-framelast);
                 //fprintf(tr_logs,"FPS = %d\n\n",framenow-framelast);
+                printf("FPS = %d\n",framenow-framelast);
                 framelast=framenow;
                 _timenow=0;
             }
             frametime=0;
-            WorkerThreadDone=1; 
             while(!FrameUpdated){}
             FrameUpdated=0; 
         }
@@ -99,44 +123,78 @@ void *WorkerThread(void *vargp){
     }while(1);
 }
 
-void *InputThreadFunc(void *vargp){
 
+ void setKeyFunc(int i){
+   
+ }
+
+void *InputThreadFunc(void *vargp){
+    //void setKeyFunc(int i);
+    int keyshift;
     //memset(key,0,sizeof(256));
     while(!(WindowInitialized && TimerInitialized)){ }
-    
 
-    
     while(1){
+        keyshift=0;
         if(GetForegroundWindow()!=MainHandle){
-            Sleep(100);
+            Sleep(10);
             continue;
         }
-
-        Sleep(1);
-        //GetKeyState(0);
-        //GetKeyboardState(key);
-        for(int i=0x01;i<=0xFE;i++){
-            key[i]=((GetKeyState(i)) & 0x8000 ? 1:0);
-        }
-        
+              
         GetCursorPos(&mouse);
         ScreenToClient(MainHandle, &mouse);
+        mousePos={(float)mouse.x,(float)mouse.y};
         
+        for(int i=0x01;i<=0xFE;i++){
+            key[i]=((GetKeyState(i)) & 0x8000 ? 1:0);
+            if(key[i]){
+                if(!keytime[i].isPressed)
+                    keytime[i].holdStart=runtime;
+                keytime[i].isPressed=1;
+                keytime[i].holdEnd=runtime;
+                keytime[i].holdTime=keytime[i].holdEnd-keytime[i].holdStart;
+            }else{
+                if(keytime[i].isPressed){
+                    keytime[i].isPressed=0;
+                    keytime[i].holdEnd=runtime;
+                    keytime[i].holdTime=0;
+                    keytime[i].lastHoldTime=keytime[i].holdEnd-keytime[i].holdStart;                    
+                }
+            }
+
+            switch(i){
+                case 'A' ... 'Z':     //65 - 90
+                case '0' ... '9':     //48 - 57
+                    if(keytime[i].isPressed)
+                        keyText[i]=1;
+                    else
+                        keyText[i]=0;
+                    break;
+                default:            //27(ESCAPE) ,1 - 47 , 48 (0) - 57 (9) , 58 - 64 , 123 - 254
+                    break;
+            }
+        }
+
+ 
         if(key[VK_LBUTTON]){
             if(!Lbutton.isHolding){    
-                Lbutton.holdstart=runtime;
-                printf("Hold Start %0.6f\n",Lbutton.holdstart);
+                Lbutton.holdStart=runtime;
+                Lbutton.lastClickPos=mousePos;
+                printf("Clicked \n");
             }
             Lbutton.isHolding=1;
+            Lbutton.holdEnd=runtime;
+            Lbutton.holdTime=Lbutton.holdEnd-Lbutton.holdStart;
         }else{
             if(Lbutton.isHolding){
                 Lbutton.isHolding=0;
-                Lbutton.holdend=runtime;
-                Lbutton.holdtime=Lbutton.holdend-Lbutton.holdstart;
-                printf("Hold Ended ..HoldTime: %0.6f\n",Lbutton.holdtime);    
+                Lbutton.holdEnd=runtime;
+                Lbutton.holdTime=0.00f;
+                Lbutton.lastHoldTime=Lbutton.holdEnd-Lbutton.holdStart;
+    /*
                 if(M_writeBuf<MOUSE_BUF_MAX){
-                    mouseBuffer[M_writeBuf].x=(float)mouse.x;
-                    mouseBuffer[M_writeBuf].y=(float)mouse.y;
+                    mouseBuffer[M_writeBuf].x=mousePos.x;
+                    mouseBuffer[M_writeBuf].y=mousePos.y;
                     M_writeBuf++;
                 }else{
                     //if( !(M_readBuf<M_writeBuf) ){
@@ -144,41 +202,51 @@ void *InputThreadFunc(void *vargp){
                         M_writeBuf=0;
                     //} 
                 }
-
+    */
             }
             
         }
 
         if(key[VK_MBUTTON]){
-            if(!Mbutton.isHolding)
-                Mbutton.holdstart=runtime;
+            if(!Mbutton.isHolding){
+                Mbutton.holdStart=runtime;
+                Mbutton.lastClickPos=mousePos;
+            }
             Mbutton.isHolding=1;
+            Mbutton.holdEnd=runtime;
+            Mbutton.holdTime=Mbutton.holdEnd-Mbutton.holdStart;
         }else{
             if(Mbutton.isHolding){
                 Mbutton.isHolding=0;
-                Mbutton.holdend=runtime;
-                Mbutton.holdtime=Mbutton.holdend-Mbutton.holdstart;
+                Mbutton.holdEnd=runtime;
+                Mbutton.holdTime=0;
+                Mbutton.lastHoldTime=Mbutton.holdEnd-Mbutton.holdStart;
             }
                 
         }
 
         if(key[VK_RBUTTON]){
             if(!Rbutton.isHolding){    
-                Rbutton.holdstart=runtime;
+                Rbutton.holdStart=runtime;
+                Rbutton.lastClickPos=mousePos;
             }
             Rbutton.isHolding=1;
+            Rbutton.holdEnd=runtime;
+            Rbutton.holdTime=Rbutton.holdEnd-Rbutton.holdStart;
         }else{
             if(Rbutton.isHolding){
                 Rbutton.isHolding=0;
-                Rbutton.holdend=runtime;
-                Rbutton.holdtime=Rbutton.holdend-Rbutton.holdstart;
+                Rbutton.holdEnd=runtime;
+                Rbutton.holdTime=0;
+                Rbutton.lastHoldTime=Rbutton.holdEnd-Rbutton.holdStart;
             }
         }
 
         if(key[VK_ESCAPE]){
             _exit(0);
         }
-        
+
+        Sleep(1);
     }
         
 }
@@ -208,7 +276,7 @@ void *GraphicsUpdater(void *vargp){
     //Memory is allocated to the buffers 0 and 1
     WinRectArray=(uint32_t *)malloc(windowDefault.width*windowDefault.height*sizeof(uint32_t));
     WinBuffer0=(uint32_t *)malloc(windowDefault.width*windowDefault.height*sizeof(uint32_t));
-    ScreenBuf=(uint32_t *)malloc(2*windowDefault.width*windowDefault.height*sizeof(uint32_t));
+    //ScreenBuf=(uint32_t *)malloc(2*windowDefault.width*windowDefault.height*sizeof(uint32_t));
     //WinBuffer1=(uint32_t *)malloc(windowDefault.width*windowDefault.height*sizeof(uint32_t));
 
     //defaultDC=GetDC(MainHandle);
@@ -232,7 +300,7 @@ void *GraphicsUpdater(void *vargp){
     WindowInitialized=1;
     while(!(WindowThreadDone && TimerInitialized)){ }
   do{
-        
+        int c=0;
         while(!WorkerThreadDone){}
         DeviceContext=GetDC(MainHandle);
         BufferBMP0=CreateBitmap(windowDefault.width,windowDefault.height,1,sizeof(COLORREF)*8,(void*)WinBuffer0);
@@ -242,21 +310,15 @@ void *GraphicsUpdater(void *vargp){
         BitBlt(DeviceContext,0,0,windowDefault.width,windowDefault.height,BufferMem0,0,0,SRCCOPY); 
         WorkerThreadDone=0;
    
-        int c=0;
-        //for (int i=0;i<(windowDefault.width*windowDefault.height);i++){
+        
+            //for (int i=0;i<(windowDefault.width*windowDefault.height);i++){
         for(int i=0;i<bufcount;i++){
-             //c=WinBuffer0[i];
-              WinBuffer0[ScreenBuf[i]]=Wincolor;
-              //WinBuffer0[i]=Wincolor;
-             
-             if(Lbutton.isHolding!=1 && Rbutton.isHolding!=1 && Mbutton.isHolding!=1){
-                //if(WinBuffer0[i]!=Wincolor)  
-             }else{
-                c=1;
-             }
-        }
-        //if(c!=1)
-            bufcount=0;
+            //c=WinBuffer0[i];
+            WinBuffer0[ScreenBuf[i]]=Wincolor;
+            //WinBuffer0[i]=Wincolor;
+        }    
+        ScreenBuf.clear();
+        bufcount=0;
         
         DeleteObject(BufferBMP0);
         DeleteDC(BufferMem0);

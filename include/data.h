@@ -26,142 +26,64 @@ typedef struct _vecCart{
     float t;
 }vec,*vecP,force,*forceP;
 
+
 template<class type>
-class queueCOORD{
+class queue{
 
     private:
-        int size_max=50;
+        int _capacity=2;
+        int _size=1;
+        type *data=(type *)malloc(sizeof(type));
+        type *temp;
 
     
     public:
-        type *data;
-        int size=0;
 
-        queueCOORD(int _size){
-            data=(type *)calloc(_size,sizeof(type));
+        type* begin(){
+            return data;
         }
 
+        type* end(){
+            return data+(_size-1);
+        }
+
+
         bool isFull(){
-            if(size>=size_max){
-                return 1;
-            }else{
-                return 0;
-            }
+            return (_size>=_capacity)?1:0;
         }
 
         bool isempty(){
-            if(size==0){
-                return 1;
-            }else{
-                return 0;
-            }
+            return (_size==0)?1:0;
         }
 
-        type *peek(){
-            return &(data[size]);
+        type *peek(int pos){
+            if(pos>=_size)
+                return NAN;
+            return data+pos;
         }
 
-        int putIn(float _x,float _y){
-            if(isFull()){
-                return -1;
+        void putIn(type val){
+            data[_size-1]=val;
+            _size++;
+            if(_capacity>=_size){
+                _capacity+=100;
+                temp=(type *)calloc(_capacity,sizeof(type));
+                for(int i=0;i<_size;i++){
+                    temp[i]=data[i];
+                }
+                free(data);
+                data=temp;
+                //temp=NULL;
             }
-            
-            data[size].x=_x;
-            data[size].y=_y;
-            size++;
-            return 1;
-        }
-
-        int putInF(float _x,float _y){
-            if(isFull()){
-                data=(type*)malloc(sizeof(type));
-                size_max++;
-            }
-            
-            data[size].x=_x;
-            data[size].y=_y;
-            size++;
-            return 1;
         }
 
         int dequeue(){
             if(isempty()){
                 return -1;
             }
-            
-
         }
-
-
 };
 
-
-template<class type>
-class queue{
-
-    private:
-        int size_max=50;
-
-    
-    public:
-        type *data;
-        int size=0;
-
-        queue(int _size){
-            data=(type *)calloc(_size,sizeof(type));
-        }
-
-        bool isFull(){
-            if(size>=size_max){
-                return 1;
-            }else{
-                return 0;
-            }
-        }
-
-        bool isempty(){
-            if(size==0){
-                return 1;
-            }else{
-                return 0;
-            }
-        }
-
-        type *peek(){
-            return data+size;
-        }
-
-        int putIn(float n){
-            if(isFull()){
-                return -1;
-            }
-            
-            data[size]=n;
-            size++;
-            return 1;
-        }
-
-        int putInF(float n){
-            if(isFull()){
-                data=(type*)malloc(sizeof(type));
-                size_max++;
-            }
-            
-            data[size]=n;
-            size++;
-            return 1;
-        }
-
-        int read(){
-            if(isempty()){
-                return -1;
-            }
-            
-
-        }
-
-
-};
 
 
 char *time_str;
