@@ -1,5 +1,5 @@
-#ifndef FILE_INCLUDES_SEEN
-#define FILE_INCLUDES_SEEN
+#ifndef FILE_INCLUDES_H_SEEN
+#define FILE_INCLUDES_H_SEEN
 
 //C Headers
 #include <windows.h>

@@ -4,12 +4,13 @@
 //#define _WIN32_WINNT  0x0500
 
 #include <includes.h>
+#include <includes.hpp>
 
 #include "threads.cpp"
 
 #include "initialize.c"
 #include "default.c"
-#include "functions.c"
+#include "functions.cpp"
 #include "WinAPI.c"
 
 #include "arduino.c"

@@ -2,7 +2,6 @@
 #define FILE_GRAPHIC_SEEN
 
 #include <includes.h>
-#include <vector>
 
 uint32_t *WinRectArray;
 HBITMAP WinRect;
@@ -16,7 +15,7 @@ uint32_t *WinBuffer0,*WinBuffer1;
 HBITMAP BufferBMP0,BufferBMP1;
 HDC BufferMem0,BufferMem1;
 
-std::vector<uint32_t> ScreenBuf;
+
 //uint32_t *ScreenBuf;
 int bufcount=0;
 

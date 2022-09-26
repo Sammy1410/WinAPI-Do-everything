@@ -10,9 +10,21 @@ double frametime=0,loop_time=0;
 BOOL screenEnable=0;
 
 
-
+typedef enum {Circle, Rect, Triangle}objlist;
 
 time_t t;
+
+typedef struct _Text{
+    COORD pos;
+    float Lheight;
+    float Lwidth;
+    int len;
+    COLORREF color;
+    WCHAR font[32];
+    WCHAR t[64];    
+}text;
+int textCount=0;
+BOOL once=0;
 
 typedef struct _FCOORD{
     float x;

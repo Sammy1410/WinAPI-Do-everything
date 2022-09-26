@@ -1,24 +1,8 @@
 #include <includes.h>
+#include <includes.hpp>
 
 
-BOOL isMouseHovering(circle &c){
-    int hit=0;
-    float lSide,rSide,top,bottom;
-    lSide=c.center.x-c.radius;
-    rSide=c.center.x+c.radius;
-    top=c.center.y-c.radius;
-    bottom=c.center.y+c.radius;
-    if( mousePos.x >= lSide && mousePos.x <= rSide)
-        hit++;
-    if( mousePos.y >= top && mousePos.y <= bottom)
-        hit++;
 
-    if(hit==2)
-        return 1;
-    else
-        return 0;
-
-}
 
 void *WorkerThread(void *vargp){
     while(!WindowInitialized){ }
@@ -41,15 +25,26 @@ void *WorkerThread(void *vargp){
     //TasksInit();
     int ObjSelected=-1;
     bool selected=0;
+    text T;
 
     do{
         loop_start=clock();
         
-        //m=300L;
-
+        if(!once){
+            once =1;
+                
+            //PushText(L"HIII",10,10,30,10,L"Comic Sans MS",blue);
+            PushText(L"Welcome to the New World Order",400,10,30,10,L"Times New Roman",blue);
+            //stringOut.push_back(T);
+            //printf("Here\n");    
+            //printf("Count: %d\n",textCount);
+              
+            //stringOut.push_back(T);
+        }
+        //printf("And Here..\n\n");
 
         for(int i=0;i<2;i++){
-            if(isMouseHovering(newCirc[i])){
+            if(isMouseHovering((newCirc+i),Circle)){
                 newCirc[i].color=red;
                 newCirc[i].radius=55;
                 if(Lbutton.holdTime>=0.05f){
@@ -79,7 +74,7 @@ void *WorkerThread(void *vargp){
             Circle_Create(newCirc[1]);
         }
             
-
+        
         //circles();
         
         //BallDrop(dt);
@@ -105,7 +100,7 @@ void *WorkerThread(void *vargp){
             if(_timenow>=1){
                 //fprintf(msg_logs,"%s :: FPS = %d \n",time_str,framenow-framelast);
                 //fprintf(tr_logs,"FPS = %d\n\n",framenow-framelast);
-                //printf("FPS = %d\n",framenow-framelast);
+                printf("FPS = %d\n",framenow-framelast);
                 framelast=framenow;
                 _timenow=0;
             }
@@ -298,15 +293,42 @@ void *GraphicsUpdater(void *vargp){
 
     WindowInitialized=1;
     while(!(WindowThreadDone && TimerInitialized)){ }
+
+    HFONT hFont;
+    wchar_t myText[64];
+    
   do{
         int c=0;
         while(!WorkerThreadDone){}
         DeviceContext=GetDC(MainHandle);
         BufferBMP0=CreateBitmap(windowDefault.width,windowDefault.height,1,sizeof(COLORREF)*8,(void*)WinBuffer0);
         BufferMem0= CreateCompatibleDC(DeviceContext);
-        SelectObject(BufferMem0,BufferBMP0);
+    //////    
+        
+        for(int i=0;i<textCount;i++){
+            fprintf(tr_logs,"In %0.4f ,%d\n",runtime,i);
+            swprintf_s(myText, stringOut[i].t);
+            
+            hFont = CreateFontW(stringOut[i].Lheight, stringOut[i].Lwidth, 0, 10, FW_DONTCARE,
+                0, 0, 0, ANSI_CHARSET,
+                OUT_TT_PRECIS, CLIP_DEFAULT_PRECIS, DRAFT_QUALITY, VARIABLE_PITCH,
+                stringOut[i].font);
 
+            SelectObject(BufferMem0, hFont);
+            SelectObject(BufferMem0,BufferBMP0);
+            SetBkMode(BufferMem0, TRANSPARENT);
+            SetTextColor(BufferMem0,stringOut[i].color);
+            TextOut(BufferMem0,stringOut[i].pos.X,stringOut[i].pos.Y,myText,wcslen(stringOut[i].t));
+            DeleteObject(hFont);
+        }
+       
+        stringOut.clear();
+        once=0;
+        textCount=0;
+        
+        SelectObject(BufferMem0,BufferBMP0);
         BitBlt(DeviceContext,0,0,windowDefault.width,windowDefault.height,BufferMem0,0,0,SRCCOPY); 
+        
         WorkerThreadDone=0;
    
         
