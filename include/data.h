@@ -24,7 +24,7 @@ typedef struct _Text{
     WCHAR t[64];    
 }text;
 int textCount=0;
-BOOL once=0;
+BOOL ranOnce=0;
 
 typedef struct _FCOORD{
     float x;

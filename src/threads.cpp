@@ -30,15 +30,13 @@ void *WorkerThread(void *vargp){
     do{
         loop_start=clock();
         
-        if(!once){
-            once =1;
-                
+        if(!ranOnce){
+            ranOnce =1;
             //PushText(L"HIII",10,10,30,10,L"Comic Sans MS",blue);
-            PushText(L"Welcome to the New World Order",400,10,30,10,L"Times New Roman",blue);
+            PushText(L"Welcome to the New World Order",400,10,3*8,8,L"Times New Roman",green);
             //stringOut.push_back(T);
             //printf("Here\n");    
             //printf("Count: %d\n",textCount);
-              
             //stringOut.push_back(T);
         }
         //printf("And Here..\n\n");
@@ -150,6 +148,7 @@ void *InputThreadFunc(void *vargp){
                 keytime[i].holdTime=keytime[i].holdEnd-keytime[i].holdStart;
             }else{
                 if(keytime[i].isPressed){
+                    
                     keytime[i].isPressed=0;
                     keytime[i].holdEnd=runtime;
                     keytime[i].holdTime=0;
@@ -323,7 +322,7 @@ void *GraphicsUpdater(void *vargp){
         }
        
         stringOut.clear();
-        once=0;
+        ranOnce=0;
         textCount=0;
         
         SelectObject(BufferMem0,BufferBMP0);
