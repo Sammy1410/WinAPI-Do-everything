@@ -14,6 +14,7 @@ typedef enum {Circle, Rect, Triangle}objlist;
 
 time_t t;
 
+WCHAR defFont[]= L"Segoe UI";
 typedef struct _Text{
     COORD pos;
     float Lheight;
@@ -21,7 +22,7 @@ typedef struct _Text{
     int len;
     COLORREF color;
     WCHAR font[32];
-    WCHAR t[64];    
+    WCHAR t[640];    
 }text;
 int textCount=0;
 BOOL ranOnce=0;

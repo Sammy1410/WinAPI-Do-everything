@@ -18,5 +18,6 @@ void *GraphicsUpdater(void *vargp);
 void *TimerThreadFunc(void *vargp);
 void *InputThreadFunc(void *vargp);
 void *ArduinoThread(void *vargp);
+void *TextThread(void *vargp);
 
 #endif

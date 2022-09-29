@@ -2,6 +2,12 @@
 #include <vector>
 
 //Circles
+circle newCirc[5];
+int ObjSelected=-1;
+bool selected=0;
+
+
+
 static float defRad=10;
 int circleCount=0;
 //circle **circ;

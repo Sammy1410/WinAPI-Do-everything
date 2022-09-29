@@ -3,11 +3,14 @@
 
 
 
+
+
+
+
 void *ArduinoThread(void *vargp){
     startHandle();
-    Tx=(char*)malloc(sizeof(char));
-    Rx=(char*)malloc(sizeof(char));
-    return 0;
+    char readTemp;
+    //return 0;
     do{
             
         if (arduinoHandle != INVALID_HANDLE_VALUE)
@@ -18,39 +21,29 @@ void *ArduinoThread(void *vargp){
 
     }while(!ArduinoInitialized);
 
-
+    BOOL stopRead=0;
 
     while(1){
-        *Rx='\0';
-        *Tx='\0';
-        tot_bytes_written=0;
-        printf("\nuser@arduino:~ $ ");
-        do{
-            *Tx=getche();
-            WriteFile(arduinoHandle,Tx,1,&bytes_written,NULL);
-        }while(*Tx!=13 && *Tx!=10);
-
-        printf("\n");
-        //Sleep(500);
-        
-
-
-    do{
-                *Rx='\0';
-                ReadFile(arduinoHandle,Rx,1,&bytes_read,NULL);
+        if(updated){
+            WriteFile(arduinoHandle,Tx,strlen(Tx),&bytes_written,NULL);
+            updated=0;
+        }
+              
+       /* do{
+                ReadFile(arduinoHandle,&readTemp,1,&bytes_read,NULL);
                 
-                if((*Rx)!=13 && (*Rx)!=10){
-                    printf("%c",*(Rx));
+                if(readTemp!=13 && readTemp!=10){
+                    Rx[RxLen]=readTemp;
+                    RxLen++;
+                    stopRead=0;
                 }else{
-
+                    stopRead=1;
                 }
-                  
-        }while(*Rx!=13 && *Rx!=10);
-        
-
+        }while(!stopRead);*/
+        Sleep(1);
     }
-        printf("\n");
 
+    
     CloseHandle(arduinoHandle);
     getch();
 

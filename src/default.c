@@ -13,7 +13,7 @@ int SetDefaults(){
     
     for(int i=0;i<256;i++){
         key[i]=0;
-            
+        //txtBuf[i]=0;    
         keytime[i].isPressed=0;
         keytime[i].holdStart=0;
         keytime[i].holdEnd=0;

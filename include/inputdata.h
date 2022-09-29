@@ -7,10 +7,13 @@
 
 static int preState=0x30;
 BYTE key[256];
-BYTE keyText[256];
+//WCHAR txtBuf[]={'\0','\0','\0','\0','\0'};
+char buf;
+int txtWpos=0;
 
 struct keydata{
     BOOL isPressed;
+    BOOL wasPressed;
     float holdStart;
     float holdEnd;
     float holdTime;

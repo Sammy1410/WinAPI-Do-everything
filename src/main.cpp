@@ -17,13 +17,15 @@
 
 
 #include "tasks.cpp"
+#include "frame.cpp"
+#include "input.cpp"
 #include "graphic.cpp"
 
 
 int WINAPI WinMain(HINSTANCE thisInstance,HINSTANCE prevInstance,PSTR _pCmdLine,int _ConsoleShowing){
 
     //Threads needed are defined    
-    pthread_t GraphicsThread,WorkThread0,TimerThread,InputThread,ArduinoIO;
+    pthread_t GraphicsThread,WorkThread0,TimerThread,InputThread,ArduinoIO,TextBufferThread;
 
     //The value of main Window are global so it is sent from these local variables in WinMain
     MainInstance = thisInstance;
@@ -47,6 +49,7 @@ int WINAPI WinMain(HINSTANCE thisInstance,HINSTANCE prevInstance,PSTR _pCmdLine,
     pthread_create(&TimerThread,NULL,TimerThreadFunc,NULL);
     pthread_create(&InputThread,NULL,InputThreadFunc,NULL);
     pthread_create(&ArduinoIO,NULL,ArduinoThread,NULL);
+    pthread_create(&TextBufferThread,NULL,TextThread,NULL);
 
  
     while(!TimerInitialized){ }
@@ -74,3 +77,22 @@ int WINAPI WinMain(HINSTANCE thisInstance,HINSTANCE prevInstance,PSTR _pCmdLine,
         
 
 }
+
+
+void *TimerThreadFunc(void *vargp){
+   TimerInitialized=1;
+   do{
+    program_time=clock();
+    
+    runtime=double(program_time)/double(CLOCKS_PER_SEC);
+    
+    //fprintf(tr_logs,"Time: %lf RunTime: %lf\n",program_time,runtime);
+    time(&t);
+    time_str = ctime(&t);
+    time_str[strlen(time_str)-1] = '\0';
+    Sleep(1);
+   }while(1);
+   
+    
+}
+

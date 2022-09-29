@@ -12,7 +12,14 @@ static COLORREF best=RGB(78,28,17);
 static COLORREF white=RGB(255,255,255);
 static COLORREF black=RGB(0,0,0);
 static COLORREF shadow=RGB(178,175,191);
-static COLORREF DarkWincolor=RGB(240,240,240);
-static COLORREF Wincolor=RGB(15,15,15);
+static COLORREF Wincolor=RGB(240,240,240);
+static COLORREF DarkWincolor=RGB(15,15,15);
+
+//color data for text
+static COLORREF redT=RGB(255,56,69);
+static COLORREF greenT=RGB(0,139,73);
+static COLORREF blueT=RGB(0,0,255);
+static COLORREF bestT=RGB(17,28,78);
+
 
 #endif

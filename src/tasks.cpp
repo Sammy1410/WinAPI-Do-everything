@@ -5,7 +5,12 @@
 
 void TasksInit(){
     //circles
-    
+    for(int k=0;k<5;k++){
+        newCirc[k].center={(float)randINT(50,1200),(float)randINT(50,700)};
+        newCirc[k].radius=40;
+        newCirc[k].defcolor=black;
+        newCirc[k].color=newCirc[k].defcolor;
+    }
     
 
 
@@ -50,6 +55,42 @@ void TasksInit(){
 }
 
 void circles(){
+    
+        for(int i=0;i<5;i++){
+            if(isMouseHovering((newCirc+i),Circle)){
+                newCirc[i].color=red;
+                newCirc[i].radius=45;
+                if(Lbutton.holdTime>=0.05f){
+                    if(!selected){
+                        ObjSelected=i;
+                        selected=1;
+                    }
+
+                }else{
+                    selected=0;
+                    ObjSelected=-1;
+                    //newCirc[i].center=Lbutton.lastClickPos;
+                }
+            }else{
+                newCirc[i].color=newCirc[i].defcolor;
+                newCirc[i].radius=40;
+            }
+        }
+
+        if(ObjSelected>=0){
+            newCirc[ObjSelected].center=mousePos;
+            newCirc[ObjSelected].color=blue+100;
+        }
+            
+
+        if(screenEnable){
+            for(int m=0;m<5;m++)
+                Circle_Create(newCirc[m]);
+        }
+
+
+
+    /*
     for(int i=0;i<circleCount;i++){
             Circle_Create(circ[i]);
             //if(_timenow>=1)
@@ -89,6 +130,8 @@ void circles(){
                 }
             }
         }
+
+        */
         
 }
 

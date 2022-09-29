@@ -37,13 +37,15 @@ BOOL checkCircleHover(circle *c){
 }
 
 
-void PushText(WCHAR* txt,int posX,int posY,float Fheight,float Fwidth,WCHAR* font,COLORREF color){
+void PushText(WCHAR *txt,int posX,int posY,float Fheight,float Fwidth,WCHAR* font,COLORREF color){
     text T;
     T.color=color;
     T.pos.X=posX;
     T.pos.Y=posY;
     swprintf_s(T.font,font);
+    //printf("%s\n",txt);
     swprintf_s(T.t,txt);
+    //swprintf_s(T.t,L"0");
     T.Lheight=Fheight;
     T.Lwidth=Fwidth;
     stringOut.push_back(T);

@@ -2,33 +2,8 @@
 #define FILE_OBJDATA_SEEN
 #include <includes.h>
 
-/*
-class vector{
-    public:
-        float x=0;
-        float y=0;
-        float r=0;
-        float t=0;
-
-        void create(float _x,float _y,char* flag){
-            if(strcmp("RT",flag)==0){
-                x=_x*cos(_y);
-                y=_x*sin(_y);
-            }else if(strcmp("XY",flag)){
-                r=sqrt(pow(_x,2)+pow(_y,2));
-                t=atan(_y/_x);
-            }
-        }     
-};
-*/
 class Particle{
     public:
-        /*Particle(float posx,float posy,float m){
-            posXY={posx,posy};
-            posRT={(float)sqrt(pow(posx,2)+pow(posy,2)),atan(posy/posx)};
-            mass=m;
-        }
-        */
         float radius=0;
         
         float mass=0;
@@ -54,6 +29,7 @@ typedef struct _circledata{
         float radius;
         BOOL filled;
         COLORREF color;
+        COLORREF defcolor;
         FCOORD *points;
 }circle,*circleP;
 
